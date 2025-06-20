@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Take a Break</title>
+  <style>
+    :root {
+      --bg1: linear-gradient(135deg, #f6d8ae, #f2b5d4, #c2f2d0);
+      --bg2: linear-gradient(135deg, #ccecfb, #e0f7f1, #fcefcf);
+      --bg3: linear-gradient(135deg, #e6d3f2, #d0f4de, #fdf6ec);
+      --bg4: linear-gradient(135deg, #dceefc, #ffe1e1, #f9f5ff);
+      --bg5: linear-gradient(135deg, #fff5c3, #ffd6b0, #fce1d6);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg1);
+      background-size: 600% 600%;
+      animation: softGradient 30s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #444;
+      overflow: hidden;
+      transition: background 1.5s ease-in-out;
+      position: relative;
+    }
+
+    @keyframes softGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.4rem;
+      z-index: 10;
+    }
+
+    #affirmation {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      opacity: 0.85;
+      z-index: 10;
+    }
+
+    #content {
+      max-width: 700px;
+      color: #555;
+      font-size: 1.4rem;
+      text-align: center;
+      margin: 1rem;
+      min-height: 140px;
+      opacity: 1;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 10;
+      user-select: none;
+      cursor: default;
+      line-height: 1.4em;
+      position: relative;
+    }
+
+    .circle {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.3);
+      animation: breathe 6s ease-in-out infinite;
+      margin-top: 30px;
+      z-index: 10;
+    }
+
+    @keyframes breathe {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9rem;
+      color: #666;
+      z-index: 10;
+      user-select: none;
+    }
+
+    #floating-orbs {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      top: 0;
+      left: 0;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: floatUp 40s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Palette Circles */
+    #palette, #quote-mode, #humor-mode {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 5;
+    }
+
+    #palette { left: 20px; }
+    #quote-mode { right: 60px; }
+    #humor-mode { right: 20px; }
+
+    .color-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #ffffff88;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, border-color 0.3s ease;
+    }
+
+    .color-circle:hover {
+      transform: scale(1.2);
+      border-color: #fff;
+    }
+
+    /* Background color circles */
+    .c1 { background: linear-gradient(135deg, #f6d8ae, #f2b5d4, #c2f2d0); }
+    .c2 { background: linear-gradient(135deg, #ccecfb, #e0f7f1, #fcefcf); }
+    .c3 { background: linear-gradient(135deg, #e6d3f2, #d0f4de, #fdf6ec); }
+    .c4 { background: linear-gradient(135deg, #dceefc, #ffe1e1, #f9f5ff); }
+    .c5 { background: linear-gradient(135deg, #fff5c3, #ffd6b0, #fce1d6); }
+
+    /* Quote mode circles */
+    .mode1 { background: #ffffff99; }
+    .mode2 { background: #d1e8ffcc; }
+    /* Humor mode circle */
+    .mode3 { background: #ffe8b8cc; }
+
+    /* Active states */
+    .active-bg {
+      border-color: #222 !important;
+      box-shadow: 0 0 12px 2px #fff8 !important;
+      transform: scale(1.3) !important;
+    }
+
+    .active-mode {
+      border-color: #222 !important;
+      box-shadow: 0 0 12px 2px #fff8 !important;
+      transform: scale(1.3) !important;
+    }
+
+    /* Quiz styling */
+    #quiz-answer {
+      margin-top: 12px;
+      font-weight: 600;
+      color: #444;
+      cursor: pointer;
+      user-select: none;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+    #quiz-answer:hover {
+      opacity: 1;
+    }
+
+    /* Humor smile effect */
+    #content.smile {
+      animation: smileAnim 1.2s ease forwards;
+    }
+    @keyframes smileAnim {
+      0% { color: #555; transform: scale(1) rotate(0deg); }
+      50% { color: #ff9800; transform: scale(1.05) rotate(5deg); }
+      100% { color: #555; transform: scale(1) rotate(0deg); }
+    }
+
+    /* New bubble style */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255 255 255 / 0.35);
+      pointer-events: none;
+      filter: drop-shadow(0 0 4px rgba(255 255 255 / 0.6));
+      animation-timing-function: ease-out;
+      opacity: 0;
+      will-change: transform, opacity;
+      user-select: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Palette Circles -->
+  <div id="palette">
+    <div class="color-circle c1" data-bg="bg1" title="Sunset Calm"></div>
+    <div class="color-circle c2" data-bg="bg2" title="Ocean Mist"></div>
+    <div class="color-circle c3" data-bg="bg3" title="Lavender Peace"></div>
+    <div class="color-circle c4" data-bg="bg4" title="Morning Sky"></div>
+    <div class="color-circle c5" data-bg="bg5" title="Soft Citrus"></div>
+  </div>
+
+  <!-- Quote Mode Switcher -->
+  <div id="quote-mode">
+    <div class="color-circle mode1 active-mode" title="Inspirational Quotes" data-mode="quote"></div>
+    <div class="color-circle mode2" title="Inspirational Quiz" data-mode="quiz"></div>
+  </div>
+
+  <!-- Humor Mode Switcher -->
+  <div id="humor-mode">
+    <div class="color-circle mode3" title="Gentle Humor" data-mode="humor"></div>
+  </div>
+
+  <div id="floating-orbs"></div>
+
+  <h1>Take a Break</h1>
+  <div id="affirmation"></div>
+  <div id="content">Loading inspiration...</div>
+  <div class="circle"></div>
+  <footer>Pause. Breathe. Reset.</footer>
+
+  <script>
+
+    const root = document.documentElement;
+
+    // Background themes
+    const themes = ['bg1', 'bg2', 'bg3', 'bg4', 'bg5'];
+    let currentBg = themes[Math.floor(Math.random() * themes.length)];
+    document.body.style.background = getComputedStyle(root).getPropertyValue(`--${currentBg}`);
+
+    // Floating orbs
+    const orbContainer = document.getElementById("floating-orbs");
+    for (let i = 0; i < 10; i++) {
+      const orb = document.createElement("div");
+      const size = Math.random() * 100 + 50;
+      orb.className = "orb";
+      orb.style.width = `${size}px`;
+      orb.style.height = `${size}px`;
+      orb.style.left = `${Math.random() * 100}%`;
+      orb.style.animationDuration = `${20 + Math.random() * 30}s`;
+      orb.style.animationDelay = `${Math.random() * 20}s`;
+      orbContainer.appendChild(orb);
+    }
+
+    // Affirmations
+    const affirmations = [
+  "You are safe and supported.",
+  "Peace begins with you.",
+  "Your calm is contagious.",
+  "Breathe in serenity.",
+  "You deserve rest and renewal.",
+  "Your worth is limitless.",
+  "Today is a gentle gift.",
+  "You are enough, exactly as you are.",
+  "Your heart knows the way.",
+  "Joy is your birthright.",
+  "Soft light surrounds you.",
+  "Every breath grounds you.",
+  "You bring warmth to the world.",
+  "Your presence matters.",
+  "Kindness flows through you.",
+  "You are a source of peace.",
+  "Serenity lives within you.",
+  "Your soul is a sunshine.",
+  "Vulnerability is strength.",
+  "You are beautifully human.",
+  "You cultivate calm.",
+  "Tranquility is your choice.",
+  "Love begins with you.",
+  "Your voice is important.",
+  "You deserve kindness.",
+  "Gratitude is available now.",
+  "Joy is in small moments.",
+  "Your inner calm guides you.",
+  "You honor your feelings.",
+  "Peace suits you perfectly.",
+  "Slow down, savor this moment.",
+  "Your potential is boundless.",
+  "Soften your expectations.",
+  "You are gentle with yourself.",
+  "Happiness is here.",
+  "You share quiet courage.",
+  "Your smile lights up the day.",
+  "Be patient with your progress.",
+  "You are free to rest.",
+  "Lightness lives in your spirit.",
+  "Healing is unfolding.",
+  "Your tears water growth.",
+  "Hope blooms within you.",
+  "You are deeply loved.",
+  "Trust your journey.",
+  "You radiate calm strength.",
+  "Joy flows when you allow it.",
+  "Your dreams matter.",
+  "Serenity follows your breath.",
+  "You deserve peaceful moments."
+];
+    const affirmationEl = document.getElementById("affirmation");
+    affirmationEl.textContent = affirmations[Math.floor(Math.random() * affirmations.length)];
+
+    // Quotes & Quiz data
+    const quotes = [
+  "Rest and self‑care are essential; you can't pour from an empty cup.",
+  "Almost everything works again if you unplug it for a few minutes.",
+  "Within you is a calm center — return there as needed.",
+  "Slow living is a gentle rebellion.",
+  "Peace is not the absence of noise but the presence of stillness.",
+  "Let today be about ease and calm.",
+  "Be where your feet are.",
+  "Inhale peace. Exhale tension.",
+  "A calm mind brings power to your ideas.",
+  "Nature does not hurry, yet everything is accomplished.",
+  "Happiness comes in waves; ride them with grace.",
+  "Do nothing for a change — it's okay.",
+  "Simplicity is the ultimate sophistication.",
+  "Stillness is sometimes the most powerful action.",
+  "The greatest gift you can give yourself is a minute of peace.",
+  "Find joy in the ordinary.",
+  "Soft hearts make the strongest people.",
+  "Worry less. Smile more.",
+  "This moment is enough.",
+  "Quiet the noise; awaken your soul.",
+  "Take care of your mind like you would a garden.",
+  "Let the winds of peace blow through you.",
+  "A relaxed mind is a creative mind.",
+  "Be gentle with your thoughts.",
+  "Your pace is perfect.",
+  "Calmness is a superpower.",
+  "Allow yourself to simply be.",
+  "Tranquility is healing.",
+  "Joy lives in small details.",
+  "Be the eye of the storm.",
+  "The best time to rest is now.",
+  "Mindful breaths reset everything.",
+  "Breathe, and remember who you are.",
+  "Peace begins at home — inside your heart.",
+  "Ease and kindness are revolutionary.",
+  "Choose calm over chaos.",
+  "Serenity seeds your day.",
+  "A happy heart is gentle.",
+  "Give your mind a soft landing.",
+  "Healing is a quiet miracle.",
+  "The sun rises the same for you — new beginnings.",
+  "You are the calm in the noise.",
+  "Soothe your soul with stillness.",
+  "Joy is quiet, yet profound.",
+  "Take gentle care of you.",
+  "A soft thought is more powerful than a loud one.",
+  "Peace is a daily practice.",
+  "Allow yourself to exhale again.",
+  "Still waters reflect the deepest self."
+];
+
+
+const quiz = [
+  { q: "What helps you feel calm right now?", a: "Taking three slow, deep breaths." },
+  { q: "Name one thing you like about today.", a: "The warmth of sunshine on your skin." },
+  { q: "What grounded you this morning?", a: "A quiet pause before starting." },
+  { q: "Where can you find beauty today?", a: "In a simple cup of tea." },
+  { q: "What lifts your spirits?", a: "Listening to birds outside." },
+  { q: "What word describes how you want to feel?", a: "Peaceful." },
+  { q: "How can you slow down right now?", a: "Setting aside one minute for silence." },
+  { q: "What scent calms you?", a: "Fresh linen or lavender." },
+  { q: "How could you soften your schedule today?", a: "Remove one task to rest." },
+  { q: "What’s one thing you appreciate about yourself?", a: "Your resilience." },
+  { q: "Who makes you feel calm?", a: "Someone who listens." },
+  { q: "What color brings you peace?", a: "Soft blue." },
+  { q: "How can you care for yourself today?", a: "By drinking water slowly." },
+  { q: "What gentle sound soothes you?", a: "A whisper of wind." },
+  { q: "What moment today made you smile?", a: "A pet cuddle." },
+  { q: "Where do you feel at ease?", a: "In nature or a quiet corner." },
+  { q: "What small kindness can you do?", a: "Send a caring message to someone." },
+  { q: "How do you recharge?", a: "Reading or light stretching." },
+  { q: "What makes you feel safe?", a: "Warm blankets." },
+  { q: "What helps you release stress?", a: "Deep breathing." },
+  { q: "What simple pleasure can you enjoy?", a: "Soft music." },
+  { q: "How can you honor rest?", a: "By stepping away from screens." },
+  { q: "What’s one thing you love about this space?", a: "Its quietness." },
+  { q: "How can you fill your cup today?", a: "With self‑care." },
+  { q: "What brings calm to your mind?", a: "A slow walk." },
+  { q: "What supports your peace?", a: "Gratitude for small joys." },
+  { q: "How can you be more present now?", a: "By focusing on your breath." },
+  { q: "What helps you reconnect with yourself?", a: "Journaling." },
+  { q: "What’s one comforting thought?", a: "This too shall pass." },
+  { q: "What’s a soothing drink you enjoy?", a: "Herbal tea." },
+  { q: "What’s your favorite kind of rest?", a: "Reading in a cozy chair." },
+  { q: "How do you recharge your heart?", a: "By spending time in nature." },
+  { q: "What phrase helps you feel calm?", a: "All is well." },
+  { q: "What helps your mind settle?", a: "Soft music or silence." },
+  { q: "What brings you comfort?", a: "A warm embrace." },
+  { q: "What makes right now gentle?", a: "The stillness around me." },
+  { q: "What reminds you of peace?", a: "Ocean waves." },
+  { q: "What helps you let go?", a: "Counting breaths." },
+  { q: "What’s a gentle activity you enjoy?", a: "Painting or doodling." },
+  { q: "What soothes your senses?", a: "A fresh breeze." },
+  { q: "What’s one thing you’re proud of?", a: "Getting through tough moments." },
+  { q: "What brings you warmth?", a: "A soft cup of cocoa." },
+  { q: "How can you simplify your day?", a: "By saying no once." },
+  { q: "What clears your mind?", a: "Stretching gently." },
+  { q: "What’s your favorite kind of slow moment?", a: "Watching clouds." },
+  { q: "What lifts your heart?", a: "Kind words." },
+  { q: "What encourages you?", a: "One step at a time." },
+  { q: "How can you honor your needs?", a: "By resting when tired." }
+];
+
+
+    // Humor quotes (gentle)
+    const humor = [
+  "Why don’t clouds ever get stressed? They just let it go with a breeze.",
+  "What do you call a relaxed molecule? Chill-ion.",
+  "Why did the tomato blush? It saw the salad dressing.",
+  "Why don't skeletons worry? They don’t have a stomach for it.",
+  "What’s a calm tree’s favorite drink? Root beer.",
+  "Why are whispers calming? They come without loudness.",
+  "What do calm cats do all day? Purr and relax.",
+  "Why did the pillow go to therapy? To get support.",
+  "What did one water droplet whisper to the next? 'Don't worry, be bubbly.'",
+  "Why was the ocean so chill? It knew how to wave.",
+  "Why did the leaf meditate? To find root peace.",
+  "Why did the sleepy keyboard fall asleep? Because it needed space.",
+  "What job do relaxed cows have? Moo-d counselors.",
+  "Why did the book feel calm? It was in its chapter of Zen.",
+  "Why don’t flowers rush? Their petals know patience.",
+  "What do chill bees say? Buzz off your stress.",
+  "Why did the candle stay calm? It knew stress burns away.",
+  "Why was the hammock so relaxed? It had no strings attached.",
+  "What did the hammock say? I'm just hanging out.",
+  "Why did the seaweed feel peaceful? It just went with the flow.",
+  "What’s a soothing fruit? A pear-pas calm.",
+  "What do relaxed clocks say? ‘I’m just biding time.’",
+  "Why did the sleeping lion dream calmly? It was paws-itively relaxed.",
+  "What’s a fish’s favorite relaxation move? Scale down.",
+  "Why did the coffee stay calm? It knew how to espresso itself gently.",
+  "Why don’t mountains get upset? They stay grounded.",
+  "Why was the slow tortoise happy? Slow and steady vibes.",
+  "What’s a calm balloon’s motto? Go with the flow.",
+  "Why did the sunflower smile? It was beaming positivity.",
+  "What’s a soothing vegetable? A kalem lettuce.",
+  "Why don’t Zen masters worry about mistakes? They let them roll off.",
+  "Why did the cookie feel calm? It was baked with care.",
+  "What do peaceful clocks say? 'Take your time.'",
+  "Why did the cactus feel proud? It stood tall without a rush.",
+  "Why was the hammock invited? For unwinding conferences.",
+  "What do calm birds do at dawn? Tweet gently.",
+  "Why don't lazy clouds argue? They just drift apart.",
+  "What’s a snail’s favorite exercise? Going slow‑motion.",
+  "Why was the butterfly relaxed? It knew change is natural.",
+  "What’s a chilled-out pineapple called? A pine-apple of serenity.",
+  "Why did the melody sound smooth? It was laid back.",
+  "What’s a calm chocolate called? A mellow-lot.",
+  "Why was the soup happy? It was in its comfort zone.",
+  "What do relaxed poets write? Calm-tems.",
+  "Why did the star shine softly? It was mindful.",
+  "What do serene rivers whisper? Flow easy.",
+  "Why did the pizza feel peaceful? It was in slice‑er bliss."
+];
+
+
+    // Modes
+    let currentMode = 'quote'; // quote, quiz, humor
+    let currentBgIndex = themes.indexOf(currentBg);
+
+    const affirmationCycles = affirmations.length;
+    const quoteCycles = quotes.length;
+    const quizCycles = quiz.length;
+    const humorCycles = humor.length;
+
+    const contentEl = document.getElementById("content");
+    const affEl = document.getElementById("affirmation");
+
+    // Palette circles event
+    document.querySelectorAll("#palette .color-circle").forEach((el, i) => {
+      if (themes[i] === currentBg) el.classList.add("active-bg");
+      el.addEventListener("click", () => {
+        // Update active state
+        document.querySelectorAll("#palette .color-circle").forEach(c => c.classList.remove("active-bg"));
+        el.classList.add("active-bg");
+        currentBgIndex = i;
+        currentBg = themes[i];
+        document.body.style.background = getComputedStyle(root).getPropertyValue(`--${currentBg}`);
+      });
+    });
+
+    // Mode circles event
+    function setActiveModeCircle(mode) {
+      document.querySelectorAll("#quote-mode .color-circle, #humor-mode .color-circle").forEach(c => {
+        c.classList.remove("active-mode");
+      });
+      if (mode === 'quote' || mode === 'quiz') {
+        // Quote mode circles
+        const quoteCircles = document.querySelectorAll("#quote-mode .color-circle");
+        if(mode === 'quote') quoteCircles[0].classList.add("active-mode");
+        else quoteCircles[1].classList.add("active-mode");
+      } else if (mode === 'humor') {
+        document.querySelector("#humor-mode .color-circle").classList.add("active-mode");
+      }
+    }
+
+    document.querySelectorAll("#quote-mode .color-circle").forEach((el) => {
+      el.addEventListener("click", () => {
+        if (el.dataset.mode === "quote") {
+          currentMode = 'quote';
+        } else if (el.dataset.mode === "quiz") {
+          currentMode = 'quiz';
+        }
+        setActiveModeCircle(currentMode);
+        displayContent();
+      });
+    });
+
+    document.querySelector("#humor-mode .color-circle").addEventListener("click", () => {
+      currentMode = 'humor';
+      setActiveModeCircle(currentMode);
+      displayContent();
+    });
+
+    // Display content depending on mode
+    let quizActive = false;
+    function displayContent() {
+      quizActive = false;
+      if (currentMode === 'quote') {
+        // Show random quote
+        affEl.style.opacity = 1;
+        affEl.textContent = affirmations[Math.floor(Math.random() * affirmationCycles)];
+        const q = quotes[Math.floor(Math.random() * quoteCycles)];
+        contentEl.innerHTML = q;
+        contentEl.style.opacity = 1;
+        contentEl.classList.remove("smile");
+      } else if (currentMode === 'quiz') {
+        // Show random quiz question and answer toggle
+        affEl.style.opacity = 1;
+        affEl.textContent = affirmations[Math.floor(Math.random() * affirmationCycles)];
+        const qz = quiz[Math.floor(Math.random() * quizCycles)];
+        contentEl.innerHTML = `<div id="quiz-question">${qz.q}</div><div id="quiz-answer" title="Click to reveal answer">Click to reveal answer</div>`;
+        contentEl.style.opacity = 1;
+        contentEl.classList.remove("smile");
+
+        const answerEl = document.getElementById("quiz-answer");
+        answerEl.onclick = () => {
+          if (quizActive) {
+            answerEl.textContent = "Click to reveal answer";
+            quizActive = false;
+          } else {
+            answerEl.textContent = qz.a;
+            quizActive = true;
+          }
+        };
+      } else if (currentMode === 'humor') {
+        // Show humor quote
+        affEl.style.opacity = 1;
+        affEl.textContent = affirmations[Math.floor(Math.random() * affirmationCycles)];
+        const h = humor[Math.floor(Math.random() * humorCycles)];
+        contentEl.innerHTML = h;
+        contentEl.style.opacity = 1;
+        contentEl.classList.add("smile");
+      }
+    }
+
+    displayContent();
+
+    // Gentle cycle every ~30 sec new content
+    setInterval(() => {
+      // Randomly update affirmation text too
+      affEl.textContent = affirmations[Math.floor(Math.random() * affirmationCycles)];
+      displayContent();
+    }, 30000);
+
+    // --- Bubble animation ---
+
+    const bubbleCount = 25;
+    const bubbles = [];
+
+    function createBubble() {
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      resetBubble(bubble);
+      orbContainer.appendChild(bubble);
+      return bubble;
+    }
+
+    function resetBubble(bubble) {
+      const size = 10 + Math.random() * 20;
+      bubble.style.width = size + "px";
+      bubble.style.height = size + "px";
+      bubble.style.left = Math.random() * 100 + "vw";
+      bubble.style.bottom = "-30px";
+      bubble.style.opacity = 0;
+      bubble.style.transform = `translateY(0) scale(${0.8 + Math.random() * 0.5})`;
+      bubble.style.animationDuration = 8000 + Math.random() * 7000 + "ms";
+      bubble.style.animationTimingFunction = "cubic-bezier(0.25, 0.1, 0.25, 1)";
+      bubble.style.animationName = "";
+    }
+
+    function animateBubble(bubble) {
+      // Animate upwards with fade in/out and slight horizontal sway
+      bubble.animate([
+        { transform: `translateY(0) translateX(0) scale(1)`, opacity: 0 },
+        { transform: `translateY(-110vh) translateX(${(Math.random() - 0.5) * 20}px) scale(1.2)`, opacity: 0.3 },
+        { opacity: 0 }
+      ], {
+        duration: 8000 + Math.random() * 7000,
+        easing: 'ease-out',
+        iterations: 1
+      }).onfinish = () => {
+        resetBubble(bubble);
+        animateBubble(bubble);
+      };
+    }
+
+    // Create and animate all bubbles
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = createBubble();
+      // Stagger start times randomly
+      setTimeout(() => {
+        animateBubble(bubble);
+      }, Math.random() * 8000);
+      bubbles.push(bubble);
+    }
+  </script>
+  <button id="play-music" style="
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.6);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  z-index: 20;
+  backdrop-filter: blur(4px);
+">Play Soothing Music</button>
+
+<audio id="relaxing-music" loop></audio>
+
+<script>
+  const tracks = [
+    "https://orangefreesounds.com/wp-content/uploads/2023/06/Dreamy-ambient-music.mp3",
+    "https://orangefreesounds.com/wp-content/uploads/2023/04/Ambient-electronica-atmospheric-and-ethereal-sound.mp3",
+    "https://orangefreesounds.com/wp-content/uploads/2023/02/Ambient-downtempo-music.mp3",
+    "https://www.orangefreesounds.com/wp-content/uploads/2020/12/Uplifting-and-inspiring-intro-music.mp3"
+  ];
+  const btn = document.getElementById('play-music');
+  const audio = document.getElementById('relaxing-music');
+
+  btn.addEventListener('click', () => {
+    audio.src = tracks[Math.floor(Math.random() * tracks.length)];
+    audio.volume = 0.2;
+    audio.play()
+      .then(() => btn.style.display = 'none')
+      .catch(console.error);
+  });
+</script>
+
+</body>
+</html>
